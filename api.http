@@ -5,7 +5,7 @@ GET http://localhost:4000/movies HTTP/1.1
 GET http://localhost:4000/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf HTTP/1.1
 
 ### GET MOVIES BY GENRE
-GET http://localhost:4000/movies?genre=Terror HTTP/1.1
+GET http://localhost:4000/movies?genre=Action HTTP/1.1
 
 ###CREATE A MOVIE
 POST http://localhost:4000/movies HTTP/1.1
@@ -22,9 +22,13 @@ Content-Type: application/json
 }
 
 ### UPDATE PATCH
-PATCH http://localhost:4000/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0
+PATCH http://localhost:4000/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0 HTTP/1.1
 Content-Type: application/json
 
 {
     "year": 1990
 }
+
+### DELETE A MOVIE
+DELETE http://localhost:4000/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0 HTTP/1.1
+Content-Type: application/json
