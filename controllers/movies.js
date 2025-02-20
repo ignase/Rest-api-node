@@ -25,13 +25,16 @@ export class MovieController {
     const newMovie = await MovieModel.create({ input: result.data });
     res.status(201).json(newMovie);
   }
+
+  // TODO: NO FUNCIONA CORRECTAMENTE, CAMBIAR.
+
   static async update(req, res) {
     const result = validatePartialMovie(req.body);
     if (!result.success) {
       return res.status(404).json({ error: JSON.parse(result.error.message) });
     }
     const { id } = req.params;
-    const updatedMovie = await MovieModel.update({ id, input: result });
+    const updatedMovie = await MovieModel.update({ id, input: result.data });
     return res.json(updatedMovie);
   }
   static async delete(req, res) {

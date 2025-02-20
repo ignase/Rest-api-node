@@ -31,7 +31,7 @@ export class MovieModel {
   static async delete({ id }) {
     const index = movies.findIndex((movie) => movie.id === id);
     if (index === -1) {
-      return res.status(404).json({ error: "Error, movie not deleted" });
+      return null;
     }
     movies.splice(index, 1);
     return true;
@@ -40,7 +40,7 @@ export class MovieModel {
   static async update({ id, input }) {
     const movieIndex = movies.findIndex((movie) => movie.id === id);
     if (movieIndex === -1) {
-      return "Movie not found (404)";
+      return null;
     }
     const updateMovie = {
       ...movies[movieIndex],
