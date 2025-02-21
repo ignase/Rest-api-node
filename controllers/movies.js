@@ -1,5 +1,6 @@
 import { validateMovie, validatePartialMovie } from "../schemas/movies.js";
-import { MovieModel } from "../models/movie.js";
+// import { MovieModel } from "../models/movie.js";
+import { MovieModel } from "../models/mysql/movie.js";
 import { readJSON } from "../utils/readJson.js";
 const movie = readJSON("../movies.json");
 
@@ -25,8 +26,6 @@ export class MovieController {
     const newMovie = await MovieModel.create({ input: result.data });
     res.status(201).json(newMovie);
   }
-
-  // TODO: NO FUNCIONA CORRECTAMENTE, CAMBIAR.
 
   static async update(req, res) {
     const result = validatePartialMovie(req.body);
