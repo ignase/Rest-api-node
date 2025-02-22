@@ -12,9 +12,9 @@ POST http://localhost:4000/movies HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "Ignacio",
-    "year": 1994,
-    "director": "Sepulveda",
+    "title": "Ana",
+    "year": 1993,
+    "director": "Krawczyk",
     "duration": 88,
     "poster": "https://m.media-amazon.com/images/I/81BMmrwSFOL._AC_UF1000,1000_QL80_.jpg",
     "genre": ["Animation", "Adventure", "Drama"],
@@ -30,5 +30,5 @@ Content-Type: application/json
 }
 
 ### DELETE A MOVIE
-DELETE http://localhost:4000/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0 HTTP/1.1
+DELETE http://localhost:4000/movies/33e8d638-f156-11ef-982c-45394dd74f04 HTTP/1.1
 Content-Type: application/json
