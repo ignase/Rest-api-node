@@ -1,4 +1,5 @@
 import mysql, { createConnection } from "mysql2/promise";
+import { v4 as uuidv4 } from "uuid";
 
 const config = {
   host: "localhost",
@@ -40,21 +41,36 @@ export class MovieModel {
       poster,
     } = input;
 
-    const result = await connection.query(
+    const movieId = uuidv4();
+
+    await connection.query(
       `INSERT INTO movie (id, title, year, director, duration, poster, rate) 
-       VALUES (UUID(), ?, ?, ?, ?, ?, ?);`,
-      [title, year, director, duration, poster, rate]
+      VALUES (?, ?, ?, ?, ?, ?, ?);`,
+      [movieId, title, year, director, duration, poster, rate]
     );
 
     const [[newMovie]] = await connection.query(
-      `SELECT * FROM movie WHERE id = LAST_INSERT_ID();`
+      `SELECT * FROM movie WHERE id = ?;`,
+      [movieId]
     );
+
+    const [genres] = await connection.query(
+      "SELECT id FROM genre WHERE name IN (?);",
+      [genreInput]
+    );
+
+    if (genres.length > 0) {
+      const genreValues = genres.map((g) => [movieId, g.id]);
+      await connection.query(
+        "INSERT INTO movie_genres (movie_id, genre_id) VALUES ?;",
+        [genreValues]
+      );
+    }
 
     return newMovie; // Return the newly created movie
   }
 
   static async delete({ id }) {
-    console.log(">>>>>>>>>>> ID: ", id);
     const [[movie]] = await connection.query(
       "SELECT * FROM movie WHERE id = ?;",
       [id]
@@ -65,5 +81,64 @@ export class MovieModel {
     return movie;
   }
 
-  static async update({ id, input }) {}
+  static async update({ id, input }) {
+    const { title, year, duration, director, rate, poster } = input;
+
+    const [[movie]] = await connection.query(
+      "SELECT * FROM movie WHERE id = ?;",
+      [id]
+    );
+
+    if (!movie) {
+      throw new Error("Movie not found");
+    }
+
+    const updateFields = [];
+    const updateValues = [];
+
+    if (title !== undefined) {
+      updateFields.push("title = ?");
+      updateValues.push(title);
+    }
+
+    if (year !== undefined) {
+      updateFields.push("year = ?");
+      updateValues.push(year);
+    }
+
+    if (duration !== undefined) {
+      updateFields.push("duration = ?");
+      updateValues.push(duration);
+    }
+
+    if (director !== undefined) {
+      updateFields.push("director = ?");
+      updateValues.push(director);
+    }
+
+    if (rate !== undefined) {
+      updateFields.push("rate = ?");
+      updateValues.push(rate);
+    }
+
+    if (poster !== undefined) {
+      updateFields.push("poster = ?");
+      updateValues.push(poster);
+    }
+
+    if (updateFields.length === 0) {
+      throw new Error("No fields to update");
+    }
+    //.join() >>> transform the array to string
+    const sql = `UPDATE movie SET ${updateFields.join(", ")} WHERE id = ?`;
+    updateValues.push(id); // Añadir el ID al final de los valores para WHERE
+    await connection.query(sql, updateValues);
+
+    const [[updatedMovie]] = await connection.query(
+      "SELECT * FROM movie WHERE id = ?;",
+      [id]
+    );
+
+    return updatedMovie;
+  }
 }
